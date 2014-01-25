@@ -8,14 +8,17 @@
       canvas { background-color: #222222; }
     </style>
   </head>
-  <body onload="init();">
+  <body onload="init();" style="-moz-user-select: none;">
     <div align="center">
       <canvas id="game-canvas" width="1024" height="768"></canvas>
     </div>
+	<script src="js/howler.js"></script>
 	<script src="js/pixi.js"></script>
 	<script src="js/globals.js"></script>
 	<script src="js/assets.js"></script>
 	<script>
+	document.oncontextmenu = function() { return false; };
+	document.onselectstart = function() { return false; };
 	
 	function init(){
 		loadAssets();
@@ -57,15 +60,33 @@
 	
 	// Touch support
 	$(renderer.view).on({ 'touchstart' : function() {
-		console.log("touchdown!");
+		mouse_down = true;
 	}});
 	$(renderer.view).on({ 'touchend' : function() {
-		console.log("touchup!");
+		mouse_down = false;
 	}});
 	$(renderer.view).on({ 'touchmove' : function() {
-		console.log("touchmove!");
+		mouse_down = false;
 	}});
 	
+	// Keyboard support
+	$(document).keydown(function(e) {
+		// Left
+		if (e.which == 37 || e.which == 65) {
+			key_down = true;
+			key_direction = 0;
+		}
+		// Right
+		else if (e.which == 39 || e.which == 68) {
+			key_down = true;
+			key_direction = 1;
+		}
+	});
+	$(document).keyup(function(e) {
+		if (e.which == 37 || e.which == 65 || e.which == 39 || e.which == 68) {
+			key_down = false;
+		}
+	});
 		
 		var backgroundTexture = PIXI.Texture.fromImage(
 			"scenes/"+scene+"/background.png"
@@ -111,6 +132,12 @@
 		
 		addPlayer();
 		
+		var music = new Howl({
+			urls: ['sound/music/detective_jazz.ogg'],
+			autoplay: true,
+			loop: true,
+		}).play();
+		
 		requestAnimFrame(update);
     }
 	
@@ -124,11 +151,13 @@
 	}
 	
 	function update() {
-		if (mouse_down) {
+		if (mouse_down || key_down) {
 			var mouse_location = mouseX < (CANVAS_WIDTH/2) ? 0 : 1;
+			//console.log("mouse_down: " + mouse_down + " mouse_location: " + mouse_location);
+			//console.log("key_down: " + key_down + " key_direction: " + key_direction);
 			// Move player left
-			if (mouse_location == 0) {
-				speed = 1;
+			if ((mouse_down && mouse_location == 0) || (key_down && key_direction == 0) && frame_count > 0) {
+				speed = -0.6;
 				if (sprite_animation_counter % sprite_animation_speed == 0) {
 					sprite_animation_counter = 0;
 					if (current_player_frame < (player_left_frames.length-1)) {
@@ -139,10 +168,12 @@
 					}
 					player.setTexture(PIXI.Texture.fromImage(player_left_frames[current_player_frame]));
 				}
+				frame_count -= 1;
+				console.log(frame_count);
 			}
 			// Move player right
-			else {
-				speed = -1;
+			else if ((mouse_down && mouse_location == 1) || (key_down && key_direction == 1)) {
+				speed = 0.6;
 				if (sprite_animation_counter % sprite_animation_speed == 0) {
 					sprite_animation_counter = 0;
 					if (current_player_frame < (player_right_frames.length-1)) {
@@ -153,6 +184,8 @@
 					}
 					player.setTexture(PIXI.Texture.fromImage(player_right_frames[current_player_frame]));
 				}
+				frame_count += 1;
+				console.log(frame_count);
 			}
 		}
 		else {
@@ -169,8 +202,27 @@
 			}
 		}
 		sprite_animation_counter += 1;
-		far.tilePosition.x -= speed * 0.250;
-		mid.tilePosition.x -= speed * 4.00;
+		
+		/* detect if scene needs to be changed */
+		for(index in scene_index){
+			if (frame_count > index) {
+				scene = scene_index[index];
+			};
+		}
+		
+		/* scene transition code */
+		if (frame_count > 210){
+			/* scrolling */
+			mid.position.x -=  speed * 4;
+			far.position.x -= speed * 4;
+		} else {
+			/* move old scene off screen */
+			mid.tilePosition.x -= speed * 4;
+			far.tilePosition.x -= speed * 0.250;
+
+			/* move new scene on screen */
+		}
+		
 		renderer.render(stage);
 		requestAnimFrame(update);
 	}
