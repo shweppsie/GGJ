@@ -34,7 +34,6 @@
 	
 	// Mouse support
 	$(renderer.view).mousedown(function(e) {
-		console.log("mousedown!");
 		var parentOffset = $(this).offset();
 		mouseX = e.pageX - parentOffset.left;
 		mouseY = e.pageY - parentOffset.top;
@@ -42,12 +41,10 @@
 		mouse_down = true;
 	});
 	$(renderer.view).mouseup(function(e) {
-		console.log("mouseup!");
 		current_player_frame = 0;
 		mouse_down = false;
 	});
 	$(renderer.view).mouseout(function(e) {
-		console.log("mouseup!");
 		current_player_frame = 0;
 		mouse_down = false;
 	});
@@ -143,6 +140,8 @@
 	
 	function addPlayer() {
 		player = PIXI.Sprite.fromImage(player_idle_frames[current_player_frame]);
+		player.scale.x = .5;
+		player.scale.y = .5;
 		player.anchor.x = 0.5;
 		player.anchor.y = 0.5;
 		player.position.x = playerX;
@@ -153,10 +152,8 @@
 	function update() {
 		if (mouse_down || key_down) {
 			var mouse_location = mouseX < (CANVAS_WIDTH/2) ? 0 : 1;
-			//console.log("mouse_down: " + mouse_down + " mouse_location: " + mouse_location);
-			//console.log("key_down: " + key_down + " key_direction: " + key_direction);
 			// Move player left
-			if ((mouse_down && mouse_location == 0) || (key_down && key_direction == 0) && frame_count > 0) {
+			if ((mouse_down && mouse_location == 0) || (key_down && key_direction == 0)) {
 				speed = -0.6;
 				if (sprite_animation_counter % sprite_animation_speed == 0) {
 					sprite_animation_counter = 0;
@@ -168,8 +165,10 @@
 					}
 					player.setTexture(PIXI.Texture.fromImage(player_left_frames[current_player_frame]));
 				}
-				frame_count -= 1;
-				console.log(frame_count);
+				if (frame_count > 0) {
+					frame_count -= 1;
+					console.log(frame_count);
+				}
 			}
 			// Move player right
 			else if ((mouse_down && mouse_location == 1) || (key_down && key_direction == 1)) {
