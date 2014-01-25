@@ -2,6 +2,7 @@
   <head>
     <meta charset="UTF-8">
     <title>Parallax Scrolling Demo</title>
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 	<style>
       body { background-color: #000000; }
       canvas { background-color: #222222; }
@@ -26,7 +27,14 @@
 		document.getElementById("game-canvas").width,
 		document.getElementById("game-canvas").height,
 		document.getElementById("game-canvas")
-		);
+	);
+		
+	$(renderer.view).mousedown(function() {
+		console.log("mousedown!");
+	});
+	$(renderer.view).mouseup(function() {
+		console.log("mouseup!");
+	});
 		
 		var backgroundTexture = PIXI.Texture.fromImage(
 			"scenes/"+scene+"/background.png"
@@ -76,7 +84,7 @@
     }
 	
 	function addPlayer() {
-		player = PIXI.Sprite.fromImage(player_frames[current_player_frame]);
+		player = PIXI.Sprite.fromImage(player_right_frames[current_player_frame]);
 		player.anchor.x = 0.5;
 		player.anchor.y = 0.5;
 		player.position.x = playerX;
@@ -88,13 +96,13 @@
 		sprite_animation_counter += 1;
 		if (sprite_animation_counter % sprite_animation_speed == 0) {
 			sprite_animation_counter = 0;
-			if (current_player_frame < (player_frames.length-1)) {
+			if (current_player_frame < (player_right_frames.length-1)) {
 				current_player_frame += 1;
 			}
 			else {
 				current_player_frame = 0;
 			}
-			player.setTexture(PIXI.Texture.fromImage(player_frames[current_player_frame]));
+			player.setTexture(PIXI.Texture.fromImage(player_right_frames[current_player_frame]));
 		}
 		far.tilePosition.x -= speed * 0.250;
 		mid.tilePosition.x -= speed * 4.00;
