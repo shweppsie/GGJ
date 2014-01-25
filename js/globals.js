@@ -18,29 +18,19 @@ var playerX = CANVAS_WIDTH/2;
 var playerY = CANVAS_HEIGHT-220;
 var current_player_frame = 0;
 
-var scene_names = [
-	'medieval',
-	'grass',
-	'daycity',
-	'nightcity',
-]
-var scenes = {
-	medieval : { end : 500, scene : null, sprites: {} },
-	grass : { end : 1000, scene : null, sprites: {} },
-	daycity : { end : 1500, scene : null, sprites: {} },
-	nightcity : { end : 2000, scene : null, sprites: {} },
-};
+var scenes = [
+	{ name : 'medieval', end : 500, scene : null, sprites: {} },
+	{ name : 'grass', end : 1000, scene : null, sprites: {} },
+	{ name : 'daycity', end : 1500, scene : null, sprites: {} },
+	{ name : 'nightcity', end : 2000, scene : null, sprites: {} },
+];
 
-var scene_current = 'medieval';
-var scene_next = "grass";
-var scene_next_next = "grass";
-
-for(scene_name in scenes){
-	s = scenes[scene_name];
-	s['sprites']['player_idle_frames'] = ["sprites/"+scene_name+"/idle1.png", "sprites/"+scene_name+"/idle2.png", "sprites/"+scene_name+"/idle3.png"];
-	s['sprites']['player_left_frames'] = ["sprites/"+scene_name+"/left1.png", "sprites/"+scene_name+"/left2.png", "sprites/"+scene_name+"/left3.png", "sprites/"+scene_name+"/left4.png", "sprites/"+scene_name+"/left5.png"];
-	s['sprites']['player_right_frames'] = ["sprites/"+scene_name+"/right1.png", "sprites/"+scene_name+"/right2.png", "sprites/"+scene_name+"/right3.png", "sprites/"+scene_name+"/right4.png", "sprites/"+scene_name+"/right5.png"];
-	console.log(s['sprites']);
+for(i=0;i<scenes.length;i++){
+	scene_name = scenes[i].name;
+	scenes[i].sprites['player_idle_frames'] = ["sprites/"+scene_name+"/idle1.png", "sprites/"+scene_name+"/idle2.png", "sprites/"+scene_name+"/idle3.png"];
+	scenes[i].sprites['player_left_frames'] = ["sprites/"+scene_name+"/left1.png", "sprites/"+scene_name+"/left2.png", "sprites/"+scene_name+"/left3.png", "sprites/"+scene_name+"/left4.png", "sprites/"+scene_name+"/left5.png"];
+	scenes[i].sprites['player_right_frames'] = ["sprites/"+scene_name+"/right1.png", "sprites/"+scene_name+"/right2.png", "sprites/"+scene_name+"/right3.png", "sprites/"+scene_name+"/right4.png", "sprites/"+scene_name+"/right5.png"];
 }
 
 var frame_count = 0;
+var scene_current = 0;

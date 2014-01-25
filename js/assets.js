@@ -1,5 +1,6 @@
 a = [];
-for(scene_name in scenes){
+for(i=0;i<scenes.length;i++){
+	scene_name = scenes[i].name;
 	a.push("scenes/"+scene_name+"/background.png");
 	a.push("scenes/"+scene_name+"/far.png");
 	a.push("scenes/"+scene_name+"/mid.png");

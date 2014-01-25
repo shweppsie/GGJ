@@ -33,7 +33,7 @@
 			renderer.width,
 			renderer.height
 			);
-		if(scene_name == scene_current){
+		if(scene_name == scenes[scene_current].name){
 			background.position.x = 0;
 		}else{
 			background.position.x = renderer.width;
@@ -51,7 +51,7 @@
 			renderer.width,
 			1200
 			);
-		if(scene_name == scene_current){
+		if(scene_name == scenes[scene_current].name){
 			far.position.x = 0;
 		}else{
 			far.position.x = renderer.width;
@@ -69,7 +69,7 @@
 			renderer.width,
 			renderer.height
 		);
-		if(scene_name == scene_current){
+		if(scene_name == scenes[scene_current].name){
 			mid.position.x = 0;
 		}else{
 			mid.position.x = renderer.width;
@@ -91,8 +91,8 @@
 		);
 
 		// load the scenes
-		for(scene_name in scenes){
-			scenes[scene_name]["scene"] = createScene(scene_name);
+		for(i=0;i<scenes.length;i++){
+			scenes[i]["scene"] = createScene(scenes[i].name);
 		}
 		
 		// Mouse support
@@ -222,44 +222,32 @@
 				player.setTexture(PIXI.Texture.fromImage(scenes[scene_current]['sprites']['player_idle_frames'][current_player_frame]));
 			}
 		}
-		sprite_animation_counter += 1;
-		
-		/* detect if scene needs to be changed */
-		/*for(index in scene_index){
-			if (frame_count > index) {
-				scene = scene_index[index];
-			};
-		}*/
-		
-		/* scene transition code */
-		if(scenes[scene_current]['scene'][2].position.x <= -renderer.width){
-			//delete scenes[scene_current]
-			scene_current = scene_next;
 
-			for(i=0;i<scene_names.length;i++){
-				if(scene_names[i] == scene_current){
-					scene_next = scene_names[i+1];
-					break;
-				}
-			}
+		sprite_animation_counter += 1;
+
+		if(scenes[scene_current]['scene'][2].position.x <= -renderer.width){
+
+			/* scene transition code */
+			scene_current += 1;
+
 		} else if (frame_count > scenes[scene_current]['end']){
+
 			/* move old scene off screen */
 			scenes[scene_current]['scene'][2].position.x -= speed * 4;
 			scenes[scene_current]['scene'][1].position.x -= speed * 4;
 			scenes[scene_current]['scene'][0].position.x -= speed * 4;
 
 			/* and new scene in */
-			scenes[scene_next]['scene'][2].position.x -= speed * 4;
-			scenes[scene_next]['scene'][1].position.x -= speed * 4;
-			scenes[scene_next]['scene'][0].position.x -= speed * 4;
+			scenes[scene_current+1]['scene'][2].position.x -= speed * 4;
+			scenes[scene_current+1]['scene'][1].position.x -= speed * 4;
+			scenes[scene_current+1]['scene'][0].position.x -= speed * 4;
 
 		} else {
-			
+
 			/* scrolling */
 			scenes[scene_current]['scene'][2].tilePosition.x -= speed * 4;
 			scenes[scene_current]['scene'][1].tilePosition.x -= speed * 0.8;
 
-			/* move new scene on screen */
 		}
 		
 		renderer.render(stage);
