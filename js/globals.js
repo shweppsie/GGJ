@@ -2,8 +2,12 @@
 var CANVAS_WIDTH = document.getElementById("game-canvas").width;
 var CANVAS_HEIGHT = document.getElementById("game-canvas").height;
 
-var speed = 1;
+var speed = 0;
 var scene = 'city';
+
+var mouseX;
+var mouseY;
+var mouse_down = false;
 
 var sprite_animation_counter = 0;
 var sprite_animation_speed = 8;

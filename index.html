@@ -24,17 +24,48 @@
     function onAssetLoaded() {
     stage = new PIXI.Stage(0x66FF99);
 	renderer = PIXI.autoDetectRenderer(
-		document.getElementById("game-canvas").width,
-		document.getElementById("game-canvas").height,
+		CANVAS_WIDTH,
+		CANVAS_HEIGHT,
 		document.getElementById("game-canvas")
 	);
-		
-	$(renderer.view).mousedown(function() {
+	
+	// Mouse support
+	$(renderer.view).mousedown(function(e) {
 		console.log("mousedown!");
+		var parentOffset = $(this).offset();
+		mouseX = e.pageX - parentOffset.left;
+		mouseY = e.pageY - parentOffset.top;
+		current_player_frame = 0;
+		mouse_down = true;
 	});
-	$(renderer.view).mouseup(function() {
+	$(renderer.view).mouseup(function(e) {
 		console.log("mouseup!");
+		current_player_frame = 0;
+		mouse_down = false;
 	});
+	$(renderer.view).mouseout(function(e) {
+		console.log("mouseup!");
+		current_player_frame = 0;
+		mouse_down = false;
+	});
+	$(renderer.view).mousemove(function(e) {
+		var parentOffset = $(this).offset();
+		mouseX = e.pageX - parentOffset.left;
+		mouseY = e.pageY - parentOffset.top;
+		//TODO handle crossover
+	});
+	
+	// Touch support
+	$(renderer.view).on({ 'touchstart' : function() {
+		console.log("touchdown!");
+	}});
+	$(renderer.view).on({ 'touchend' : function() {
+		console.log("touchup!");
+	}});
+	$(renderer.view).on({ 'touchmove' : function() {
+		console.log("touchmove!");
+	}});
+	
 		
 		var backgroundTexture = PIXI.Texture.fromImage(
 			"scenes/"+scene+"/background.png"
@@ -84,7 +115,7 @@
     }
 	
 	function addPlayer() {
-		player = PIXI.Sprite.fromImage(player_right_frames[current_player_frame]);
+		player = PIXI.Sprite.fromImage(player_idle_frames[current_player_frame]);
 		player.anchor.x = 0.5;
 		player.anchor.y = 0.5;
 		player.position.x = playerX;
@@ -93,17 +124,51 @@
 	}
 	
 	function update() {
-		sprite_animation_counter += 1;
-		if (sprite_animation_counter % sprite_animation_speed == 0) {
-			sprite_animation_counter = 0;
-			if (current_player_frame < (player_right_frames.length-1)) {
-				current_player_frame += 1;
+		if (mouse_down) {
+			var mouse_location = mouseX < (CANVAS_WIDTH/2) ? 0 : 1;
+			// Move player left
+			if (mouse_location == 0) {
+				speed = 1;
+				if (sprite_animation_counter % sprite_animation_speed == 0) {
+					sprite_animation_counter = 0;
+					if (current_player_frame < (player_left_frames.length-1)) {
+						current_player_frame += 1;
+					}
+					else {
+						current_player_frame = 0;
+					}
+					player.setTexture(PIXI.Texture.fromImage(player_left_frames[current_player_frame]));
+				}
 			}
+			// Move player right
 			else {
-				current_player_frame = 0;
+				speed = -1;
+				if (sprite_animation_counter % sprite_animation_speed == 0) {
+					sprite_animation_counter = 0;
+					if (current_player_frame < (player_right_frames.length-1)) {
+						current_player_frame += 1;
+					}
+					else {
+						current_player_frame = 0;
+					}
+					player.setTexture(PIXI.Texture.fromImage(player_right_frames[current_player_frame]));
+				}
 			}
-			player.setTexture(PIXI.Texture.fromImage(player_right_frames[current_player_frame]));
 		}
+		else {
+			speed = 0;
+			if (sprite_animation_counter % sprite_animation_speed == 0) {
+				sprite_animation_counter = 0;
+				if (current_player_frame < (player_idle_frames.length-1)) {
+					current_player_frame += 1;
+				}
+				else {
+					current_player_frame = 0;
+				}
+				player.setTexture(PIXI.Texture.fromImage(player_idle_frames[current_player_frame]));
+			}
+		}
+		sprite_animation_counter += 1;
 		far.tilePosition.x -= speed * 0.250;
 		mid.tilePosition.x -= speed * 4.00;
 		renderer.render(stage);
