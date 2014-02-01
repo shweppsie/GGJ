@@ -1,0 +1,11 @@
+freesound.org
+cyberkineticfilms - dragon_lands.wav
+joelaudio - dragon_roar.wav
+kmoon - footsteps_grass.wav
+mentalsanity - footsteps_tile.wav
+jankoehl - forest_stomp.wav
+smokebomb99 - sword_slash.wav
+twisterman - player_hit.wav
+nextmaking - bloody_hit.wav
+Abyssmal - slashkut.wav(armor_slash.wav)
+imbubec - 1_Knife_Slash_A.wav(poke_slash.wav)
