@@ -9,7 +9,7 @@ function init(){
 		document.getElementById("game-canvas")
 	);
 
-	loadingBar_size = 60;
+	loadingBar_size = 70;
 	bar_empty = PIXI.Texture.fromImage("graphics/load_back.png");
 	bar_full = PIXI.Texture.fromImage("graphics/load_fill.png");
 	cur_bar_x = CANVAS_WIDTH/2-(16*loadingBar_size/2);
@@ -245,7 +245,7 @@ function characterCreation() {
 	
 	var ballval = [];
 	ballval.push(123);
-	var points = 30;
+	var points = 20;
 	
 	// text
 	var pointsLeft = new PIXI.Text("Points remaining: "+points, {font:"Bold 16pt Arial", fill:"white"})
@@ -330,13 +330,11 @@ function characterCreation() {
     }
 
     button.click = function(data){
-        //if (points == 0) {
-			var childLen = stage.children.length;
-			for (var m = 0; m < stage.children.length; m++) {
-				fadeOut(stage.children[m], 0.1);
-			}
-			setTimeout(startGame, 1000);
-		//}
+		var childLen = stage.children.length;
+		for (var m = 0; m < stage.children.length; m++) {
+			fadeOut(stage.children[m], 0.1);
+		}
+		setTimeout(startGame, 1000);
     }
 
     button.position.x = 50;
@@ -524,7 +522,6 @@ function characterCreation() {
 
 function startGame() {
 	clearStage();
-	console.log("Game start");
 	jazz_music.fade(1.0, 0.0, 2000);
 	medieval_music.volume(0.0);
 	medieval_music.play();
@@ -536,6 +533,16 @@ function startGame() {
 	in_game = true;
 	right_enabled = true;
 
+	// Reload start moke music because annoying bug.
+	mokebattle_music_start = new Howl({
+	urls: ['audio/music/mokebattle_start.mp3'],
+		volume: 2.0,
+		loop: false,
+		onend: function() {
+			mokebattle_music_loop.play();
+		}
+	});
+	
 	// load the scenes
 	for(i=0;i<scenes.length;i++){
 		scenes[i]["scene"] = createScene(scenes[i].name);
@@ -594,7 +601,6 @@ function addArbitraryObject(src_obj) {
 function update() {
 	if (in_game) {
 		if (mouse_down || key_down) {
-			console.log(frame_count);
 
 			/* get the mouse pointer location */
 			if (!jazzMode) {

@@ -57,6 +57,6 @@ function imagesLoaded() {
 		splashScreen();
 		//startGame();
 	} else {
-		setTimeout(imagesLoaded, 500);
+		setTimeout(imagesLoaded, 2000);
 	}
 }

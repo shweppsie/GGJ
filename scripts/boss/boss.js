@@ -8,6 +8,7 @@ assets.push("scripts/boss/mum2.png");
 
 
 function boss() {
+	medieval_music.stop();
 	evil_laugh.play();
 	footsteps_tile.stop();
 
@@ -93,9 +94,9 @@ function homescene(){
 	back = new PIXI.TilingSprite(PIXI.Texture.fromImage("scenes/nightcity/background.png"), renderer.width, renderer.height);
 	far = new PIXI.TilingSprite(PIXI.Texture.fromImage("scenes/nightcity/far.png"), renderer.width, renderer.height);
 	mid = new PIXI.Sprite.fromImage("scripts/boss/house.png");
-	//back.alpha = 0;
-	//far.alpha = 0;
-	//mid.alpha = 0;
+	back.alpha = 0;
+	far.alpha = 0;
+	mid.alpha = 0;
 	mid.scale.x = 1.1;
 	mid.position.x = 0
 	mid.position.y = -120;
@@ -129,6 +130,7 @@ function homescene(){
 
 	kid_frame = 0;
 	kidbro = new PIXI.Sprite.fromImage(kid_frames[kid_frame]);
+	kidbro.alpha = 0;
 	kidbro.position.x = 100;
 	kidbro.position.y = 525;
 	kidbro.scale.y = 0.5;
@@ -138,12 +140,19 @@ function homescene(){
 
 	mum_frame = 0;
 	mumbro = new PIXI.Sprite.fromImage(mum_frames[mum_frame]);
+	mumbro.alpha = 0;
 	mumbro.position.x = 500;
 	mumbro.position.y = 420;
 	mumbro.scale.y = 0.8;
 	mumbro.scale.x = 0.8;
 	stage.addChild(mumbro);
 	update_mum();
+	
+	fadeIn(kidbro, 0.1);
+	fadeIn(mumbro, 0.1);
+	fadeIn(mid, 0.1);
+	fadeIn(far, 0.1);
+	fadeIn(back, 0.1);
 
 	bubble = new PIXI.Sprite.fromImage("graphics/bubbleleft.png");
 	bubble.scale.y = 0.5;
@@ -187,31 +196,23 @@ function homescene(){
 			stage.removeChild(text);
 			stage.removeChild(mumbro);
 			stage.removeChild(kidbro);
-			//right_enabled = true;
 			
-			scenes[scene_current]['scene'][2].position.x = renderer.width;
-			scenes[scene_current]['scene'][1].position.x = renderer.width;
-			scenes[scene_current]['scene'][0].position.x = renderer.width;
+			fadeOut(scenes[scene_current]['scene'][2], 0.05);
+			fadeOut(scenes[scene_current]['scene'][1], 0.05);
+			fadeOut(scenes[scene_current]['scene'][0], 0.05);
+			scenes[3]['scene'][2].alpha = 0;
+			scenes[3]['scene'][1].alpha = 0;
+			scenes[3]['scene'][0].alpha = 0;
 			scenes[3]['scene'][2].position.x = 0;
 			scenes[3]['scene'][1].position.x = 0;
 			scenes[3]['scene'][0].position.x = 0;
+			fadeIn(scenes[3]['scene'][2], 0.02);
+			fadeIn(scenes[3]['scene'][1], 0.02);
+			fadeIn(scenes[3]['scene'][0], 0.02);
 
 			stage.removeChild(back);
 			stage.removeChild(far);
 			stage.removeChild(mid);
-			stage.removeChild(player);
-
-			function fade(){
-				if(scenes[scene_current]['scene'][0].alpha != 1){
-					change = 0.02;
-					scenes[scene_current]['scene'][0].alpha += change;
-					scenes[scene_current]['scene'][1].alpha += change;
-					scenes[scene_current]['scene'][2].alpha += change;
-					setTimeout(fade, 10);
-					return;
-				}
-			}
-			fade();
 
 			creditsOn = true;
 			function b() {
@@ -224,10 +225,8 @@ function homescene(){
 
 			b();
 			setTimeout( function() {
-				creditsOn = false;
-				nightcity_music.fade(1.5, 0.0, 1000);
-				splashScreen();
-			}, 5000);
+				credits();
+			}, 8000);
 
 			return;
 		}
@@ -248,4 +247,85 @@ function homescene(){
 		bubbletext_index++;
 		bubble.mousedown = bubble_run;
 	}	
+}
+
+function credits() {
+	screen_text = [];
+	credit_text = [
+		[6, "The End"],
+		[3, ""],
+		[3, ""],
+		[3, ""],
+		[3, "Created in 48 hours for:"],
+		[2, "Global Game Jam 2014, University of Waikato"],
+		[3, ""],
+		[3, "Programmers:"],
+		[2, "Jeremy Utting, Nathan Overall, Jaco vdm, Ruan vdm"],
+		[3, ""],
+		[3, "Art by:"],
+		[2, "Lise van Zijl"],
+		[3, ""],
+		[3, "Llamas trained by:"],
+		[2, "Gay-ry van Zijl"],
+		[3, ""],
+		[3, "Created using:"],
+		[2, "Pixi.js, Howler.js, Adobe Illustrator, Audacity"],
+		[3, ""],
+		[3, "Music:"],
+		[2, "Licensed under Creative Commons: By Attribution 3.0"],
+		[2, "http://creativecommons.org/licensesby/3.0/"],
+		[2, "Call to Adventure - Kevin MacLeod (incompetech.com)"],
+		[2, "Hitman - Kevin MacLeod (incompetech.com)"],
+		[2, "Full On - Kevin MacLeod (incompetech.com)"],
+		[2, "Gymnopedie No. 1 - Kevin MacLeod (incompetech.com)"],
+		[2, "Take a Chance - Kevin MacLeod (incompetech.com)"],
+		[2, "Detective Jazz - Track composed and recorded by Mihai Sorohan 2009"],
+		[3, ""],
+		[2, "Special thanks to Stephen Brown for the 'Mokemon' Theme"],
+		[3, ""],
+		[3, "Sound effects from freesound.org:"],
+		[2, "dragon roar - joelaudio"],
+		[2, "grass footsteps - kmoon"],
+		[2, "tile footsteps - mentalsanity"],
+		[3, ""],
+		[3, ""],
+		[3, ""],
+		[5, "Thanks for playing our game, we hope you enjoyed it :]"]
+	];
+	function newLine(line) {
+		if (line < credit_text.length) {
+			var ctext = new PIXI.Text(credit_text[line][1], {font:"bold 16pt Arial", fill:"white", strokeThickness:credit_text[line][0], wordWrap:"false", wordWrapWidth:800});
+			ctext.position.x = 150;
+			ctext.position.y = 800;
+			stage.addChild(ctext);
+			screen_text.push(ctext);			
+			setTimeout(function() {
+				newLine(line+1);
+			}, 1000);
+		}
+	}
+	function moveCredits() {
+		if (creditsOn) {
+			if (screen_text.length == 0) {
+				creditsOn = false;
+			}
+			else if (screen_text[0].position.y < -50) {
+				screen_text.shift();
+			}
+			for (var i=0; i<screen_text.length; i++) {
+				screen_text[i].position.y -= 2;
+			}
+			setTimeout(moveCredits, 50);
+		}
+		else {
+			nightcity_music.fade(1.5, 0.0, 3000);
+			fadeOut(scenes[3]['scene'][2], 0.02);
+			fadeOut(scenes[3]['scene'][1], 0.02);
+			fadeOut(scenes[3]['scene'][0], 0.02);
+			setTimeout(splashScreen, 2000);
+		}
+	}
+		
+	newLine(0);
+	moveCredits();
 }

@@ -63,12 +63,10 @@ var scripts = [
 	{ start : 1300, name : "mokemon" },
 	{ start : 2000, name : "boss" },
 	/* this is rigged */
-	//{ start : 1, script :  homescene },
 ]
 
 /* load scripts */
 for(i=0;i<scripts.length;i++){
-	console.log("js/scenes/"+scripts[i]['name']+".js");
 	var s = document.createElement('script')
 	s.setAttribute("type","text/javascript")
 	var name = scripts[i]['name'];

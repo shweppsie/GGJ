@@ -86,17 +86,17 @@ function loadSound() {
 			sound_list[9] = true;
 		}
 	});
-	dragon_roar = new Howl({
-		urls: ['audio/sounds/dragon_roar.wav'],
-		volume: 2.0,
+	evil_laugh = new Howl({
+		urls: ['audio/sounds/evil_laugh.ogg'],
+		volume: 1.5,
 		loop: false,
 		onload: function() {
 			sound_list[10] = true;
 		}
 	});
-	evil_laugh = new Howl({
-		urls: ['audio/sounds/evil_laugh.ogg'],
-		volume: 1.5,
+	dragon_roar = new Howl({
+		urls: ['audio/sounds/dragon_roar.ogg'],
+		volume: 2.0,
 		loop: false,
 		onload: function() {
 			sound_list[11] = true;
